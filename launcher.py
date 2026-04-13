@@ -2,11 +2,16 @@ import os
 import sys
 import tkinter as tk
 from tkinter import messagebox
+from dotenv import load_dotenv # 导入 load_dotenv
 
 # 将项目根目录添加到 Python 路径，确保能找到 src 包
 project_root = os.path.dirname(os.path.abspath(__file__))
 if project_root not in sys.path:
     sys.path.append(project_root)
+
+# 显式加载 .env 文件，确保环境变量被正确设置
+dotenv_path = os.path.join(project_root, '.env')
+load_dotenv(dotenv_path)
 
 if __name__ == "__main__":
     print("LogPulse Initializing...")

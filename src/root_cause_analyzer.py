@@ -34,14 +34,24 @@ def analyze_root_cause(report: dict[str, Any]) -> dict[str, Any]:
     if HAS_OPENAI and api_key:
         try:
             client = OpenAI(api_key=api_key, base_url=base_url)
-            prompt = f"以下是从日志中提取的错误样本，请直接告诉我导致这些错误的可能原因（中文回答）：\n\n" + "\n".join(unique_samples)
+            prompt = (
+                f"以下是从日志中提取的错误样本。请针对每个错误样本，"
+                f"详细分析其可能的原因，并给出具体的解释和可操作的解决方案。请用中文回答。\n\n"
+                f"请严格按照以下格式输出分析结果：\n"
+                f"--- 错误样本 ---\n"
+                f"[原始错误日志样本]\n"
+                f"故障定性：[权限问题/环境缺失/代码逻辑错误/其他]\n"
+                f"深度解释：[该报错在特定系统（如 Android 或 MIUI）下的具体含义，或详细的技术原因]\n"
+                f"修复建议：[直接给出可操作的修改方案，例如：检查AndroidManifest.xml权限、更新依赖版本、检查文件路径等]\n\n"
+                f"错误样本:\n" + "\n".join(unique_samples) + "\n"
+            )
             response = client.chat.completions.create(
                 model="deepseek-chat", # 使用 DeepSeek 默认模型
                 messages=[{"role": "user", "content": prompt}]
             )
             analysis = response.choices[0].message.content
             return {
-                "summary": "基于 AI (DeepSeek) 的错误原因分析：",
+                "summary": "日志分析报告",
                 "details": [analysis]
             }
         except Exception as e:
