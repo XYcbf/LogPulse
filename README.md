@@ -1,4 +1,4 @@
-# 🩺 LogPulse - AI 驱动的日志智能分析与诊断专家
+# 🩺 LogPulse - 日志智能分析与诊断
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
