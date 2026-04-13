@@ -4,8 +4,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![AI Powered](https://img.shields.io/badge/AI-DeepSeek-orange.svg)](https://www.deepseek.com/)
 
-> **写在前面**：
-> 我是一名测试工程师。在长期的职业生涯中，我深刻感受到测试工作不应只是机械的点击、单一的重复。我希望通过制作像 **LogPulse** 这样的自动化智能工具，将 AI 的力量注入到日常流程中，帮助开发者、测试人员和运维同事告别低效，更快速、更精准地定位问题根源。
+**LogPulse** 是一款专为开发者、测试人员和运维专家打造的轻量级、可视化日志诊断工具。它打破了传统日志分析“只看统计、不看语义”的局限，通过深度集成 **DeepSeek AI**，能够像人类专家一样读懂日志，直接告诉你故障的根本原因。
 
 ---
 
@@ -16,21 +15,21 @@
 ![GUI 界面展示](https://via.placeholder.com/800x450.png?text=LogPulse+GUI+Interface+Screenshot)
 
 ### 2. AI 智能诊断结果
-*展示 DeepSeek AI 提供的自然语言分析建议*
-![AI 分析展示](https://via.placeholder.com/800x300.png?text=AI+Root+Cause+Analysis+Display)
+*展示 DeepSeek AI 提供的结构化分析建议*
+![AI 分析展示](https://via.placeholder.com/800x400.png?text=AI+Structured+Analysis+Report)
 
 ---
 
 ## ✨ 核心亮点
 
-### 🧠 智能根因诊断 (Root Cause Analysis)
-不再只是告诉你“发生了 10 次错误”。LogPulse 会自动提取错误堆栈和上下文，调用 DeepSeek AI 进行语义分析，以自然语言直接输出：
-- **故障定性**：是权限问题、环境缺失还是代码逻辑错误？
-- **深度解释**：该报错在特定系统（如 Android 或 MIUI）下的具体含义。
-- **修复建议**：直接给出可操作的修改方案。
+### 🧠 深度根因诊断 (Root Cause Analysis)
+不再只是告诉你“发生了 10 次错误”。LogPulse 会自动提取错误堆栈和上下文，调用 **DeepSeek AI** 进行语义分析，并严格按照以下结构输出：
+- **故障定性**：直接判断是权限问题、环境缺失还是代码逻辑错误。
+- **深度解释**：详细阐述报错在特定系统（如 Android 或 MIUI）下的具体含义及技术背景。
+- **修复建议**：提供精准、可操作的修改方案（如检查清单或代码片段）。
 
 ### 🚀 极致易用：为非技术人员设计
-- **可视化界面**：基于 Tkinter 的直观 GUI，一键选择文件或文件夹。
+- **可视化界面**：基于 Tkinter 的直观 GUI，支持一键选择文件或文件夹。
 - **零配置启动**：Windows 用户双击 `start.bat` 即可运行，彻底告别复杂的命令行。
 - **智能 Logcat 解析**：内置强大的正则引擎，自动识别并拆分 Android Logcat 各种复杂格式（PID, TID, Tag, Level 等）。
 
@@ -39,7 +38,7 @@
 - `root_cause_analysis.json`：AI 驱动的详细诊断建议。
 - `detected_issues.json`：自动识别的潜在问题汇总。
 - `generated_tdd_rules.json`：根据日志特征自动提取的测试定义。
-- `test_issue_remediation_generated.py`：自动生成的 pytest 测试骨架，助力回归测试。
+- `test_issue_remediation_generated.py`：自动生成的 pytest 测试骨架。
 
 ---
 
@@ -65,9 +64,9 @@ pip install -r requirements.txt
 ```
 
 ### 3. 配置 AI（开启超能力 🦸）
-复制 `.env.example` 并重命名为 `.env`，填入您的 DeepSeek API Key：
+直接打开项目根目录下的 `.env` 文件，填入您的 DeepSeek API Key：
 ```ini
-OPENAI_API_KEY=您的_DeepSeek_API_Key
+OPENAI_API_KEY=在这里填入您的_DeepSeek_API_Key
 OPENAI_BASE_URL=https://api.deepseek.com
 ```
 
@@ -82,14 +81,15 @@ OPENAI_BASE_URL=https://api.deepseek.com
 ```text
 LogPulse/
 ├── src/                # 核心逻辑
-│   ├── gui_app.py      # 可视化界面
-│   ├── log_loader.py   # 智能日志加载与解析
+│   ├── gui_app.py      # 可视化界面（富文本排版优化）
+│   ├── log_loader.py   # 智能日志加载与解析（支持正则 Logcat）
 │   ├── issue_detector.py # 问题检测引擎
-│   └── root_cause_analyzer.py # AI 根因分析器
+│   └── root_cause_analyzer.py # AI 根因分析器（DeepSeek 集成）
 ├── rules/              # 分析结果输出目录
 ├── tests/              # 自动生成的测试代码
-├── launcher.py         # 稳健的程序入口
+├── launcher.py         # 稳健的 Python 程序入口
 ├── start.bat           # Windows 一键启动脚本
+├── .env                # 个人配置文件（不上传 GitHub）
 └── README.md           # 本说明文档
 ```
 
@@ -102,6 +102,11 @@ LogPulse/
 ## 📄 开源协议
 
 本项目采用 [MIT](LICENSE) 协议开源。
+
+---
+
+> **💡 开发者的寄语**：
+> 我是一名测试工程师。在长期的职业生涯中，我深刻感受到测试工作不应只是机械的点击、单一的重复。我希望通过制作像 **LogPulse** 这样的自动化智能工具，将 AI 的力量注入到日常流程中，帮助开发者、测试人员和运维同事告别低效，更快速、更精准地定位问题根源。
 
 ---
 *Powered by DeepSeek AI - 让日志分析更有温度。*

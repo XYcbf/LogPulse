@@ -40,7 +40,6 @@ coverage.xml
 # Project Specific
 logs/
 rules/
-.env
 *.db
 *.sqlite
 *.sqlite3
