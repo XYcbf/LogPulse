@@ -4,26 +4,26 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![AI Powered](https://img.shields.io/badge/AI-DeepSeek-orange.svg)](https://www.deepseek.com/)
 
-**LogPulse** 是一款专为开发者、测试人员和运维专家打造的轻量级、可视化日志诊断工具。它打破了传统日志分析“只看统计、不看语义”的局限，通过深度集成 **DeepSeek AI**，能够像人类专家一样读懂日志，直接告诉你故障的根本原因。
-
----
-
+**LogPulse** 是一款专为开发者、测试人员和运维专家打造的轻量级、可视化日志诊断引擎。
+它彻底改变了传统工具只能“机械统计”的现状：通过内置的解析算法，LogPulse 能从纷繁复杂的原始日志中自动识别并锁定报错点，精准提取错误堆栈及上下文信息。 在完成这些核心的数据清洗与特征定位后，它深度结合 DeepSeek AI 的语义分析能力，为你直观呈现故障的根本原因与解决方案。。
 ## 📺 运行展示
 
 ### 1. 可视化主界面
-*在这里插入您的 GUI 运行截图（例如：`docs/images/gui_main.png`）*
-![GUI 界面展示](https://via.placeholder.com/800x450.png?text=LogPulse+GUI+Interface+Screenshot)
+<img width="1189" height="934" alt="image" src="https://github.com/user-attachments/assets/409537af-0628-4a66-9f03-455d35c43f16" />
+
 
 ### 2. AI 智能诊断结果
 *展示 DeepSeek AI 提供的结构化分析建议*
-![AI 分析展示](https://via.placeholder.com/800x400.png?text=AI+Structured+Analysis+Report)
+<img width="1881" height="838" alt="image" src="https://github.com/user-attachments/assets/7acf0300-0c50-49ed-84fa-a022ef20d053" />
+<img width="1867" height="612" alt="image" src="https://github.com/user-attachments/assets/8f2f3ded-894c-4b68-ac2d-8d005ac6b122" />
+
 
 ---
 
 ## ✨ 核心亮点
 
 ### 🧠 深度根因诊断 (Root Cause Analysis)
-不再只是告诉你“发生了 10 次错误”。LogPulse 会自动提取错误堆栈和上下文，调用 **DeepSeek AI** 进行语义分析，并严格按照以下结构输出：
+不再只是简单地罗列“错误次数”。LogPulse 能够从海量日志中自动捕获关键异常，精准提取错误堆栈与上下文关联信息；随后，它将这些结构化情报交由 DeepSeek AI 进行深度语义分析，并严格按照以下标准输出：
 - **故障定性**：直接判断是权限问题、环境缺失还是代码逻辑错误。
 - **深度解释**：详细阐述报错在特定系统（如 Android 或 MIUI）下的具体含义及技术背景。
 - **修复建议**：提供精准、可操作的修改方案（如检查清单或代码片段）。
@@ -52,27 +52,25 @@
 
 ---
 
-## 🏃 快速开始
 
+## 🏃 快速开始
 ### 1. 准备环境
 确保您的系统已安装 **Python 3.10** 或更高版本。
-
 ### 2. 安装依赖
 克隆项目后，在根目录运行：
 ```bash
 pip install -r requirements.txt
 ```
-
 ### 3. 配置 AI（开启超能力 🦸）
 直接打开项目根目录下的 `.env` 文件，填入您的 DeepSeek API Key：
 ```ini
 OPENAI_API_KEY=在这里填入您的_DeepSeek_API_Key
 OPENAI_BASE_URL=https://api.deepseek.com
 ```
-
 ### 4. 运行
 - **Windows (推荐)**：直接双击 `start.bat`。
 - **通用方式**：运行 `python launcher.py`。
+
 
 ---
 
@@ -106,7 +104,7 @@ LogPulse/
 ---
 
 > **💡 开发者的寄语**：
-> 我是一名测试工程师。在长期的职业生涯中，我深刻感受到测试工作不应只是机械的点击、单一的重复。我希望通过制作像 **LogPulse** 这样的自动化智能工具，将 AI 的力量注入到日常流程中，帮助开发者、测试人员和运维同事告别低效，更快速、更精准地定位问题根源。
+> 作为一名测试工程师，我始终坚信测试的价值不应被枯燥的机械操作所埋没。我打造LogPulse 的初衷，是希望将 AI 算法深度植入生产流，用智能化的利刃打破低效循环。让开发者、测试及运维团队从重复性劳动中解脱，赋予每位同行极速洞察、精准溯源的能力。
 
 ---
 *Powered by DeepSeek AI - 让日志分析更有温度。*
