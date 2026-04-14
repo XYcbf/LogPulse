@@ -21,17 +21,24 @@
 传统的 TDD 是“开发人员先写测试 -> 运行失败 -> 编写代码 -> 测试通过”。而在这个系统中，TDD 的起点（测试用例）是由代码**自动扫描真实日志并生成**的，开发人员只需根据生成的测试进行修复即可。具体协同流程如下：
 
 ### 步骤 1：发现并定义问题（分析阶段）
+
 **文件：** [issue_detector.py](src/issue_detector.py)
 *   **职责**：充当日志数据的“体检医生”。
 *   **机制**：读取并解析原始日志文件（如 JSONL、SQLite 等），根据预设指标检测数据质量问题。例如：重复率过高（`HIGH_DUPLICATION`）、核心字段缺失（`MISSING_CORE_COLUMNS`）、空值占比过高（`HIGH_NULL_RATIO`）等。
 *   **输出**：将所有发现的日志缺陷汇总成一个结构化的“问题报告”。
 
+
+
 ### 步骤 2：生成 TDD 测试用例（Red 阶段的准备）
+
 **文件：** [remediation_planner.py](src/remediation_planner.py)
 *   **职责**：根据问题报告，自动生成 TDD 测试代码。
 *   **机制**：内置 `ISSUE_LIBRARY`（定义了缺陷优先级、负责人、修复建议及**核心测试断言 `pytest_assertion`**）。通过 `generate_issue_pytest_skeleton` 方法，将报告中的问题自动转化为一个个具体的 `pytest` 测试函数，并写入测试文件。
 
+
+
 ### 步骤 3：执行 TDD 循环（Red -> Green 阶段）
+
 **文件：** [test_issue_remediation_generated.py](tests/test_issue_remediation_generated.py)
 *   **职责**：`remediation_planner.py` 自动生成的产物，也是开发人员进行 TDD 的**实际工作台**。
 *   **机制**：
@@ -40,11 +47,16 @@
     *   **Write（编码）**：开发人员根据提示修改日志采集链路或服务代码，修复缺陷。
     *   **Green（成功）**：重新拉取日志并运行测试，直到断言通过，标志着缺陷已被彻底修复。
 
+
+
 ### 步骤 4：提取基线规则，防止退化（Refactor & 持续监控）
+
 **文件：** [rule_generator.py](src/rule_generator.py)
 *   **职责**：为日志数据提取“契约规则”，用于后续的持续集成（CI）。
 *   **机制**：当日志被修复并趋于稳定后，分析当前的健康日志，自动推导出数据质量的基线规则（如 `core_columns_not_null`、`categorical_stability`）。
 *   **作用**：生成的规则构成了未来的 TDD 基础，确保后续代码变更不会导致日志数据质量倒退。
+
+
 
 ---
 
@@ -67,9 +79,11 @@
 ### 场景二：系统升级验证
 当您更新了项目的 AI 提示词（Prompt）或重写了正则逻辑后：
 - 运行自动生成的测试集：
+
   ```powershell
   pytest tests/test_issue_remediation_generated.py
   ```
+
 - 如果某个测试失败，它会立刻告诉你：**“新的修改导致系统无法识别之前的类加载错误了！”** 这能极大降低由于代码修改带来的“功能退化”风险。
 
 ---
