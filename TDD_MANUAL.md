@@ -14,29 +14,43 @@
 
 ---
 
-## 2. 自动化工作流详解
+## 2. 核心实现脚本 (.py)
 
-LogPulse 的 TDD 体系由以下四个关键环节构成：
+LogPulse 的 TDD 自动化体系由以下三个核心 Python 脚本驱动，它们分工明确，协同完成了从“日志识别”到“代码生成”的全过程：
 
-### 第一步：特征捕获 (Capture)
-当您运行 LogPulse 分析日志时，[log_loader.py](file:///d:/LogLens/LogPulse/src/log_loader.py) 会利用强大的正则引擎，自动识别 Logcat 或其他日志格式中的关键字段（如 Level, Tag, Message）。
+### **1. [rule_generator.py](src/rule_generator.py) —— 规则定义引擎**
+*   **职责**：TDD 的“源头”。
+*   **作用**：负责扫描原始日志并提取出异常模式（如数据缺失、字段异常等），将其固化为结构化的 `generated_tdd_rules.json` 文件。
+*   **核心逻辑**：它定义了“测试应该检查什么”。
 
-### 第二步：规则固化 (Define)
-[rule_generator.py](file:///d:/LogLens/LogPulse/src/rule_generator.py) 会分析提取出的特征，识别出重复的报错模式，并将其保存到 `rules/generated_tdd_rules.json` 中。
-- **示例规则**：如果日志中包含 `Permission denied`，则预期结果应为“权限错误”。
+### **2. [remediation_planner.py](src/remediation_planner.py) —— 测试合成中心**
+*   **职责**：TDD 的“大脑”。
+*   **作用**：
+    *   维护内置规则库 `ISSUE_LIBRARY`，其中包含各种问题的 **`pytest_assertion`（测试断言模板）**。
+    *   将发现的问题与对应的测试模板进行匹配。
+    *   **自动写代码**：通过内置的字符串模板，合成最终的 `test_issue_remediation_generated.py` 脚本。
 
-### 第三步：代码合成 (Synthesize)
-[remediation_planner.py](file:///d:/LogLens/LogPulse/src/remediation_planner.py) 读取 JSON 规则库，并根据预设的测试模板，自动生成 Python 测试脚本 `tests/test_issue_remediation_generated.py`。
-
-### 第四步：一键验证 (Verify)
-您只需运行一条命令，即可验证当前系统的分析能力：
-```powershell
-pytest tests/test_issue_remediation_generated.py
-```
+### **3. [issue_detector.py](src/issue_detector.py) —— 事实识别引擎**
+*   **职责**：TDD 的“裁判”。
+*   **作用**：负责从原始日志中识别出真实发生的错误事实（Issue）。
+*   **与 TDD 的关系**：它为测试运行提供了“实际值”。当 `pytest` 执行时，它会对比 `rule_generator` 的预期规则与 `issue_detector` 的实际发现。
 
 ---
 
-## 3. 测试工程师该如何使用？
+## 3. 联动逻辑示例
+
+1.  **[rule_generator.py](src/rule_generator.py)** 宣告：*"根据历史日志，我们需要确保数据集不为空。"*
+2.  **[remediation_planner.py](src/remediation_planner.py)** 响应：*"收到！我已在生成的测试脚本中插入了 `assert row_count > 0`。"*
+3.  **[issue_detector.py](src/issue_detector.py)** 报告：*"当前扫描结果显示，实际行数 row_count 为 0。"*
+4.  **Pytest** 执行：断言失败，触发红色报警，完成 TDD 闭环。
+
+---
+
+## 4. 规则文件详解：`generated_tdd_rules.json`
+
+---
+
+## 5. 测试工程师该如何使用？
 
 ### 场景一：Bug 复现与回归
 1.  **复现**：拿到开发或用户反馈的崩溃日志文件夹。
@@ -45,12 +59,15 @@ pytest tests/test_issue_remediation_generated.py
 
 ### 场景二：系统升级验证
 当您更新了项目的 AI 提示词（Prompt）或重写了正则逻辑后：
-- 运行自动生成的测试集。
+- 运行自动生成的测试集：
+  ```powershell
+  pytest tests/test_issue_remediation_generated.py
+  ```
 - 如果某个测试失败，它会立刻告诉你：**“新的修改导致系统无法识别之前的类加载错误了！”** 这能极大降低由于代码修改带来的“功能退化”风险。
 
 ---
 
-## 4. 核心价值升华
+## 6. 核心价值升华
 
 -   **知识资产化**：将“看日志的经验”变成“可执行的 JSON 规则库”，成为团队永久的知识资产。
 -   **效率革命**：告别手动编写繁琐的断言（Assert），让机器为机器写代码。
