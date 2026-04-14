@@ -42,6 +42,19 @@
 - `test_issue_remediation_generated.py`：自动生成的 pytest 测试骨架。
 
 ---
+## 🛠️ 自动化 TDD 工作流
+
+LogPulse 不仅仅是一个分析工具，它还构建了一套**从日志到测试 (Log-to-Test)** 的完整闭环，赋能测试驱动开发 (TDD)：
+
+1. **自动生成规则**：分析日志时，系统会自动提取异常模式并固化为 `generated_tdd_rules.json` 规则库。
+2. **合成测试代码**：系统根据规则库，自动生成基于 `pytest` 的测试代码 `test_issue_remediation_generated.py`。
+3. **一键执行验证**：
+   你可以直接运行以下命令来验证系统对已知问题的识别能力：
+   ```bash
+   pytest tests/test_issue_remediation_generated.py
+   ```
+4. **回归守卫**：当你优化了解析算法或升级了 AI 提示词，通过运行这些自动生成的测试，可以确保系统不会产生“功能退化”，始终保持对已知故障的精准识别。
+
 
 ## 🛠️ 支持格式
 
