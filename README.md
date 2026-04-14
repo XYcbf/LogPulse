@@ -1,12 +1,13 @@
-# 🩺 LogPulse - AI 驱动的日志智能分析与诊断专家
+# 🩺 LogPulse - 日志智能分析与诊断工具
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![AI Powered](https://img.shields.io/badge/AI-DeepSeek-orange.svg)](https://www.deepseek.com/)
 
 **LogPulse** 是一款专为开发者、测试人员和运维专家打造的轻量级、可视化日志诊断引擎。
-它彻底改变了传统工具只能“机械统计”的现状：通过内置的解析算法，LogPulse 能从纷繁复杂的原始日志中自动识别并锁定报错点，精准提取错误堆栈及上下文信息。 在完成这些核心的数据清洗与特征定位后，它深度结合 DeepSeek AI 的语义分析能力，为你直观呈现故障的根本原因与解决方案。。
+它彻底改变了传统工具只能“机械统计”的现状：通过内置的解析算法，LogPulse 能从纷繁复杂的原始日志中自动识别并锁定报错点，精准提取错误堆栈及上下文信息。 在完成这些核心的数据清洗与特征定位后，它深度结合 DeepSeek AI 的语义分析能力，为你直观呈现故障的根本原因与解决方案。
 ## 📺 运行展示
+**LogPulse** 界面采用极简风格，将复杂的工程逻辑深藏于后台。坚持“零门槛”交互逻辑：用户只需选择路径并点击“智能分析”，LogPulse 即可自动完成从日志定位、特征提取到 AI 诊断的全流程，将海量原始数据转化为直观的高亮诊断清单。
 
 ### 1. 可视化主界面
 <img width="1189" height="934" alt="image" src="https://github.com/user-attachments/assets/409537af-0628-4a66-9f03-455d35c43f16" />
@@ -44,7 +45,7 @@
 
 ## 🛠️ 自动化 TDD 工作流
 
-LogPulse 不仅仅是一个分析工具，它还构建了一套**从日志到测试 (Log-to-Test)** 的完整闭环，赋能测试驱动开发 (TDD)。详细逻辑请参阅：[📘 TDD 实践手册](TDD_MANUAL.md)。
+LogPulse 不仅仅是一个分析工具，它还构建了一套**从日志到测试 (Log-to-Test)** 的完整闭环，赋能测试驱动开发 (TDD)：
 
 1. **自动生成规则**：分析日志时，系统会自动提取异常模式并固化为 `generated_tdd_rules.json` 规则库。
 2. **合成测试代码**：系统根据规则库，自动生成基于 `pytest` 的测试代码 `test_issue_remediation_generated.py`。
@@ -57,7 +58,8 @@ LogPulse 不仅仅是一个分析工具，它还构建了一套**从日志到测
 
 ---
 
-## 🧪 支持格式
+
+## 🛠️ 支持格式
 
 | 格式类型 | 扩展名 | 说明 |
 | :--- | :--- | :--- |
