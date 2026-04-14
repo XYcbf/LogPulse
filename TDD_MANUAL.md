@@ -14,35 +14,47 @@
 
 ---
 
-## 2. 核心实现脚本 (.py)
+## 2. 核心组件与 TDD 工作流
 
-LogPulse 的 TDD 自动化体系由以下三个核心 Python 脚本驱动，它们分工明确，协同完成了从“日志识别”到“代码生成”的全过程：
+这四个核心文件共同构成了一个针对**日志数据质量（Log Data Quality）的自动化、问题驱动的 TDD（测试驱动开发）工作流**。
 
-### **1. [rule_generator.py](src/rule_generator.py) —— 规则定义引擎**
-*   **职责**：TDD 的“源头”。
-*   **作用**：负责扫描原始日志并提取出异常模式（如数据缺失、字段异常等），将其固化为结构化的 `generated_tdd_rules.json` 文件。
-*   **核心逻辑**：它定义了“测试应该检查什么”。
+传统的 TDD 是“开发人员先写测试 -> 运行失败 -> 编写代码 -> 测试通过”。而在这个系统中，TDD 的起点（测试用例）是由代码**自动扫描真实日志并生成**的，开发人员只需根据生成的测试进行修复即可。具体协同流程如下：
 
-### **2. [remediation_planner.py](src/remediation_planner.py) —— 测试合成中心**
-*   **职责**：TDD 的“大脑”。
-*   **作用**：
-    *   维护内置规则库 `ISSUE_LIBRARY`，其中包含各种问题的 **`pytest_assertion`（测试断言模板）**。
-    *   将发现的问题与对应的测试模板进行匹配。
-    *   **自动写代码**：通过内置的字符串模板，合成最终的 `test_issue_remediation_generated.py` 脚本。
+### 步骤 1：发现并定义问题（分析阶段）
+**文件：** [issue_detector.py](src/issue_detector.py)
+*   **职责**：充当日志数据的“体检医生”。
+*   **机制**：读取并解析原始日志文件（如 JSONL、SQLite 等），根据预设指标检测数据质量问题。例如：重复率过高（`HIGH_DUPLICATION`）、核心字段缺失（`MISSING_CORE_COLUMNS`）、空值占比过高（`HIGH_NULL_RATIO`）等。
+*   **输出**：将所有发现的日志缺陷汇总成一个结构化的“问题报告”。
 
-### **3. [issue_detector.py](src/issue_detector.py) —— 事实识别引擎**
-*   **职责**：TDD 的“裁判”。
-*   **作用**：负责从原始日志中识别出真实发生的错误事实（Issue）。
-*   **与 TDD 的关系**：它为测试运行提供了“实际值”。当 `pytest` 执行时，它会对比 `rule_generator` 的预期规则与 `issue_detector` 的实际发现。
+### 步骤 2：生成 TDD 测试用例（Red 阶段的准备）
+**文件：** [remediation_planner.py](src/remediation_planner.py)
+*   **职责**：根据问题报告，自动生成 TDD 测试代码。
+*   **机制**：内置 `ISSUE_LIBRARY`（定义了缺陷优先级、负责人、修复建议及**核心测试断言 `pytest_assertion`**）。通过 `generate_issue_pytest_skeleton` 方法，将报告中的问题自动转化为一个个具体的 `pytest` 测试函数，并写入测试文件。
+
+### 步骤 3：执行 TDD 循环（Red -> Green 阶段）
+**文件：** [test_issue_remediation_generated.py](tests/test_issue_remediation_generated.py)
+*   **职责**：`remediation_planner.py` 自动生成的产物，也是开发人员进行 TDD 的**实际工作台**。
+*   **机制**：
+    *   生成的测试用例默认带有 `@pytest.mark.skip(reason="P1 待修复: ...")` 标记。
+    *   **Red（失败）**：开发人员接手任务时，移除 `skip` 标记并运行测试，此时断言（如 `assert missing_core_columns_count < 4`）必然失败。
+    *   **Write（编码）**：开发人员根据提示修改日志采集链路或服务代码，修复缺陷。
+    *   **Green（成功）**：重新拉取日志并运行测试，直到断言通过，标志着缺陷已被彻底修复。
+
+### 步骤 4：提取基线规则，防止退化（Refactor & 持续监控）
+**文件：** [rule_generator.py](src/rule_generator.py)
+*   **职责**：为日志数据提取“契约规则”，用于后续的持续集成（CI）。
+*   **机制**：当日志被修复并趋于稳定后，分析当前的健康日志，自动推导出数据质量的基线规则（如 `core_columns_not_null`、`categorical_stability`）。
+*   **作用**：生成的规则构成了未来的 TDD 基础，确保后续代码变更不会导致日志数据质量倒退。
 
 ---
 
-## 3. 联动逻辑示例
+## 3. 工作流总结
 
-1.  **[rule_generator.py](src/rule_generator.py)** 宣告：*"根据历史日志，我们需要确保数据集不为空。"*
-2.  **[remediation_planner.py](src/remediation_planner.py)** 响应：*"收到！我已在生成的测试脚本中插入了 `assert row_count > 0`。"*
-3.  **[issue_detector.py](src/issue_detector.py)** 报告：*"当前扫描结果显示，实际行数 row_count 为 0。"*
-4.  **Pytest** 执行：断言失败，触发红色报警，完成 TDD 闭环。
+这个架构实现了一种**“反向生成”**的 TDD 模式：
+1. `issue_detector.py` 发现现实中的缺陷；
+2. `remediation_planner.py` 将缺陷转化为待修复的测试用例（`test_issue_remediation_generated.py`）；
+3. 开发人员负责让这些测试通过；
+4. 最后由 `rule_generator.py` 提炼规则固化成果，完美闭环了日志数据质量的治理过程。
 
 
 ## 4. 测试工程师该如何使用？
