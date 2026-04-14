@@ -42,6 +42,7 @@
 - `test_issue_remediation_generated.py`：自动生成的 pytest 测试骨架。
 
 ---
+
 ## 🛠️ 自动化 TDD 工作流
 
 LogPulse 不仅仅是一个分析工具，它还构建了一套**从日志到测试 (Log-to-Test)** 的完整闭环，赋能测试驱动开发 (TDD)：
@@ -54,6 +55,8 @@ LogPulse 不仅仅是一个分析工具，它还构建了一套**从日志到测
    pytest tests/test_issue_remediation_generated.py
    ```
 4. **回归守卫**：当你优化了解析算法或升级了 AI 提示词，通过运行这些自动生成的测试，可以确保系统不会产生“功能退化”，始终保持对已知故障的精准识别。
+
+---
 
 
 ## 🛠️ 支持格式
