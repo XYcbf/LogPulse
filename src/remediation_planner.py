@@ -116,15 +116,24 @@ def generate_issue_pytest_skeleton(
     output_file = Path(output_path)
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
-    lines = [
-        "import pytest",
-        "",
-        "",
-        "class TestIssueRemediation:",
-    ]
+    # 读取现有测试文件内容（如果存在）
+    existing_content = ""
+    if output_file.exists():
+        existing_content = output_file.read_text(encoding="utf-8")
+
+    lines = []
+    if not existing_content:
+        lines.extend([
+            "import pytest",
+            "",
+            "",
+            "class TestIssueRemediation:",
+        ])
+    else:
+        lines.extend(existing_content.splitlines())
 
     items = plan.get("items", [])
-    if not items:
+    if not items and not existing_content:
         lines.extend(
             [
                 "    def test_no_detected_issues(self) -> None:",
@@ -136,9 +145,17 @@ def generate_issue_pytest_skeleton(
             code = str(item.get("issue_code", "unknown")).lower()
             code = "".join(char if char.isalnum() else "_" for char in code).strip("_")
             test_name = f"test_remediate_{code}"
+            
+            # 检查是否已经存在该测试函数
+            if any(f"def {test_name}" in line for line in lines):
+                logger.info(f"测试用例 {test_name} 已存在，跳过。")
+                continue
+
             priority = item.get("priority", "P2")
             action = item.get("recommended_action", "")
             assertion = item.get("pytest_assertion", "assert True")
+            
+            # 如果是新发现的问题，添加带 skip 的测试用例
             lines.extend(
                 [
                     f'    @pytest.mark.skip(reason="{priority} 待修复: {action}")',
@@ -150,5 +167,5 @@ def generate_issue_pytest_skeleton(
 
     content = "\n".join(lines).rstrip() + "\n"
     output_file.write_text(content, encoding="utf-8")
-    logger.info("已生成 pytest 骨架: {}", output_file)
+    logger.info("已增量更新 pytest 骨架: {}", output_file)
     return output_file

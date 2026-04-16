@@ -43,19 +43,19 @@
 
 ---
 
-## 🛠️ 自动化 TDD 工作流
+## 🛠️ 自动化 TDD 与 DTT 工作流
 
-LogPulse 不仅仅是一个分析工具，它还构建了一套**从日志到测试 (Log-to-Test)** 的完整闭环，赋能测试驱动开发：
+LogPulse 不仅仅是一个分析工具，它还构建了一套**从缺陷到测试 (Defect-to-Test, DTT)** 的防御性免疫系统，赋能 **Vibe Coding** 下的极速安全开发：
 
-1. **自动生成规则**：分析日志时，系统会自动提取异常模式并固化为 `generated_tdd_rules.json` 规则库。
-2. **合成测试代码**：系统根据规则库，自动生成基于 `pytest` 的测试代码 `test_issue_remediation_generated.py`。
-3. **一键执行验证**：
-   你可以直接运行以下命令来验证系统对已知问题的识别能力：
-   ```bash
-   pytest tests/test_issue_remediation_generated.py
-   ```
-4. **回归守卫**：当你优化了解析算法或升级了 AI 提示词，通过运行这些自动生成的测试，可以确保系统不会产生“功能退化”，始终保持对已知故障的精准识别。
-5. 详情见《LogPulse 自动化 TDD 实践手册》即TDD_MANUAL.md文档
+1. **缺陷自动捕捉 (Defect Detection)**：系统扫描真实日志，将模糊的报错自动转化为结构化的 `detected_issues.json`。
+2. **增量测试生成 (Incremental Test Generation)**：基于发现的缺陷，系统**自动增量更新** `test_issue_remediation_generated.py`。
+   - **Bug 博物馆**：历史上出现过的所有 Bug 都会作为测试用例永久保留，形成强大的防御性测试套件。
+3. **Vibe Coding 极速验证**：开发者在修改代码时，通过 `pytest` 实时验证修复效果。
+   - **灭虫于开头**：在编写代码初期，运行这些自动生成的“红”色测试，确保新功能不会触发历史已有的 Bug。
+4. **契约固化与回归**：
+   - 运行 `pytest` 确保修复通过。
+   - 运行 `rule_generator.py` 将健康状态固化为 `generated_tdd_rules.json` 规则库。
+5. 详情见《LogPulse 自动化 TDD 实践手册》即 [TDD_MANUAL.md](TDD_MANUAL.md) 文档。
 ---
 
 

@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-04-16T03:31:01.034785+00:00",
+  "log_directory": "logs_demo",
+  "dataset_count": 1,
+  "datasets": [
+    {
+      "source_file": "logs_demo\\clean.jsonl",
+      "source_type": "text",
+      "table_name": null,
+      "row_count": 2,
+      "rules": [
+        {
+          "rule": "dataset_not_empty",
+          "check": "row_count > 0",
+          "severity": "high"
+        },
+        {
+          "rule": "required_columns_present",
+          "check": "columns include ['timestamp', 'level', 'message', 'event', 'trace_id']",
+          "severity": "high"
+        },
+        {
+          "rule": "core_columns_not_null",
+          "check": "['timestamp', 'level', 'message', 'event', 'trace_id'] null_ratio < 0.05",
+          "severity": "high"
+        },
+        {
+          "rule": "null_ratio_threshold",
+          "check": "all columns null_ratio <= 0.3, observed={'timestamp': 0.0, 'level': 0.0, 'message': 0.0, 'event': 0.0, 'trace_id': 0.0}",
+          "severity": "medium"
+        },
+        {
+          "rule": "categorical_stability",
+          "check": "distribution drift check on columns=['level', 'message']",
+          "severity": "medium"
+        }
+      ]
+    }
+  ]
+}

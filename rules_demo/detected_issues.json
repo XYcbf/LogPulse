@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-04-16T03:31:01.039976+00:00",
+  "log_directory": "logs_demo",
+  "dataset_count": 1,
+  "total_issue_count": 0,
+  "datasets": [
+    {
+      "source_file": "logs_demo\\clean.jsonl",
+      "source_type": "text",
+      "table_name": null,
+      "row_count": 2,
+      "issue_count": 0,
+      "issues": [],
+      "error_samples": []
+    }
+  ]
+}

@@ -29,23 +29,24 @@
 
 
 
-### 步骤 2：生成 TDD 测试用例（Red 阶段的准备）
+### 步骤 2：生成 TDD 测试用例（增量式 DTT 阶段）
 
 **文件：** [remediation_planner.py](src/remediation_planner.py)
-*   **职责**：根据问题报告，自动生成 TDD 测试代码。
-*   **机制**：内置 `ISSUE_LIBRARY`（定义了缺陷优先级、负责人、修复建议及**核心测试断言 `pytest_assertion`**）。通过 `generate_issue_pytest_skeleton` 方法，将报告中的问题自动转化为一个个具体的 `pytest` 测试函数，并写入测试文件。
+*   **职责**：根据问题报告，自动生成并**增量更新** TDD 测试代码。
+*   **机制**：
+    *   内置 `ISSUE_LIBRARY`（定义了缺陷优先级、负责人、修复建议及**核心测试断言 `pytest_assertion`**）。
+    *   **增量生成**：系统会读取现有的 `test_issue_remediation_generated.py`，仅追加新发现的缺陷类型，跳过已存在的用例。
+    *   **Bug 博物馆**：这种模式让测试文件成为了一个不断增长的“历史 Bug 库”，确保系统在迭代中具备强大的免疫力。
 
-
-
-### 步骤 3：执行 TDD 循环（Red -> Green 阶段）
+### 步骤 3：执行 TDD 循环（Vibe Coding 下的即时灭虫）
 
 **文件：** [test_issue_remediation_generated.py](tests/test_issue_remediation_generated.py)
-*   **职责**：`remediation_planner.py` 自动生成的产物，也是开发人员进行 TDD 的**实际工作台**。
+*   **职责**：研发人员进行 Vibe Coding 的**质量护栏**。
 *   **机制**：
-    *   生成的测试用例默认带有 `@pytest.mark.skip(reason="P1 待修复: ...")` 标记。
-    *   **Red（失败）**：开发人员接手任务时，移除 `skip` 标记并运行测试，此时断言（如 `assert missing_core_columns_count < 4`）必然失败。
-    *   **Write（编码）**：开发人员根据提示修改日志采集链路或服务代码，修复缺陷。
-    *   **Green（成功）**：重新拉取日志并运行测试，直到断言通过，标志着缺陷已被彻底修复。
+    *   **灭虫于开头**：在开始编写修复代码前，运行 `pytest`。如果看到“历史 Bug”测试变红，说明新改动触发了旧故障。
+    *   **Red（失败）**：新 Bug 被发现后，对应的 `test_remediate_xxx` 默认处于 skip 状态或运行失败。
+    *   **Write（编码）**：研发人员凭借直觉和 AI 辅助快速修复，并重新产生日志。
+    *   **Green（成功）**：再次运行测试，直到历史和当前测试全部通过。
 
 
 
