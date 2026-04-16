@@ -29,24 +29,22 @@
 
 
 
-### 步骤 2：生成 TDD 测试用例（增量式 DTT 阶段）
+### 步骤 2：生成防御性测试（增量式 DTT 阶段）
 
-**文件：** [remediation_planner.py](src/remediation_planner.py)
-*   **职责**：根据问题报告，自动生成并**增量更新** TDD 测试代码。
+**组件：** [remediation_planner.py](src/remediation_planner.py)
+*   **职责**：基于缺陷报告，自动生成并**增量更新**测试套件。
 *   **机制**：
-    *   内置 `ISSUE_LIBRARY`（定义了缺陷优先级、负责人、修复建议及**核心测试断言 `pytest_assertion`**）。
-    *   **增量生成**：系统会读取现有的 `test_issue_remediation_generated.py`，仅追加新发现的缺陷类型，跳过已存在的用例。
-    *   **Bug 博物馆**：这种模式让测试文件成为了一个不断增长的“历史 Bug 库”，确保系统在迭代中具备强大的免疫力。
+    *   **智能追加**：系统会读取现有的 `test_issue_remediation_generated.py`，仅针对新发现的缺陷类型追加测试函数，已存在的用例会被跳过，从而实现历史记录的持久化。
+    *   **Bug 博物馆 (Bug Museum)**：这一特性使测试文件随着时间推移，积累成为一个覆盖所有历史坑位的“免疫库”。即使是半年前出现过的 Bug，一旦重现，也会立刻被捕捉。
 
-### 步骤 3：执行 TDD 循环（Vibe Coding 下的即时灭虫）
+### 步骤 3：闭环验证（Vibe Coding 质量护栏）
 
-**文件：** [test_issue_remediation_generated.py](tests/test_issue_remediation_generated.py)
-*   **职责**：研发人员进行 Vibe Coding 的**质量护栏**。
-*   **机制**：
-    *   **灭虫于开头**：在开始编写修复代码前，运行 `pytest`。如果看到“历史 Bug”测试变红，说明新改动触发了旧故障。
-    *   **Red（失败）**：新 Bug 被发现后，对应的 `test_remediate_xxx` 默认处于 skip 状态或运行失败。
-    *   **Write（编码）**：研发人员凭借直觉和 AI 辅助快速修复，并重新产生日志。
-    *   **Green（成功）**：再次运行测试，直到历史和当前测试全部通过。
+**组件：** [test_issue_remediation_generated.py](tests/test_issue_remediation_generated.py)
+*   **职责**：充当 Vibe Coding 极速开发模式下的安全哨兵。
+*   **工作流**：
+    *   **灭虫于开头**：在动手写第一行修复代码前，运行 `pytest`。如果看到“历史 Bug”测试变红，说明新改动触发了旧故障。
+    *   **目标驱动 (Target Driven)**：研发人员根据失败的断言（Assert）精准修改业务代码。
+    *   **实时反馈**：修复后立即重新扫描日志并运行测试。只有当所有历史和当前测试全部变绿，才标志着当前任务真正完成。
 
 
 

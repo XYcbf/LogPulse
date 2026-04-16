@@ -35,26 +35,25 @@
 - **智能 Logcat 解析**：内置强大的正则引擎，自动识别并拆分 Android Logcat 各种复杂格式（PID, TID, Tag, Level 等）。
 
 ### 📊 全方位的分析产物
-分析完成后，LogPulse 会在 `rules/` 目录下自动生成：
-- `root_cause_analysis.json`：AI 驱动的详细诊断建议。
-- `detected_issues.json`：自动识别的潜在问题汇总。
-- `generated_tdd_rules.json`：根据日志特征自动提取的测试定义。
-- `test_issue_remediation_generated.py`：自动生成的 pytest 测试骨架。
+分析完成后，LogPulse 会在 `rules/` 目录下自动生成一套完整的诊断资产：
+- `root_cause_analysis.json`：AI 驱动的详细根因诊断建议。
+- `detected_issues.json`：自动识别的原始数据质量问题汇总。
+- `remediation_plan.json`：包含修复建议、优先级及测试断言的行动计划。
+- `generated_tdd_rules.json`：根据健康日志特征自动提取的“质量契约”。
+- `test_issue_remediation_generated.py`：自动生成（并支持增量更新）的 pytest 测试脚本，位于 `tests/` 目录。
 
 ---
 
-## 🛠️ 自动化 TDD 与 DTT 工作流
+## 🛠️ 自动化 DTT (Defect-to-Test) 工作流
 
-LogPulse 不仅仅是一个分析工具，它还构建了一套**从缺陷到测试 (Defect-to-Test, DTT)** 的防御性免疫系统，赋能 **Vibe Coding** 下的极速安全开发：
+LogPulse 不仅仅是一个分析工具，它还构建了一套**从缺陷到测试 (DTT)** 的防御性免疫系统，赋能 **Vibe Coding** 下的极速安全开发：
 
-1. **缺陷自动捕捉 (Defect Detection)**：系统扫描真实日志，将模糊的报错自动转化为结构化的 `detected_issues.json`。
-2. **增量测试生成 (Incremental Test Generation)**：基于发现的缺陷，系统**自动增量更新** `test_issue_remediation_generated.py`。
+1. **缺陷自动捕捉 (Defect Detection)**：系统扫描真实日志，将模糊的报错自动转化为结构化的缺陷报告。
+2. **增量测试生成 (Incremental Test Generation)**：基于发现的缺陷，系统**自动增量更新**测试用例。
    - **Bug 博物馆**：历史上出现过的所有 Bug 都会作为测试用例永久保留，形成强大的防御性测试套件。
 3. **Vibe Coding 极速验证**：开发者在修改代码时，通过 `pytest` 实时验证修复效果。
-   - **灭虫于开头**：在编写代码初期，运行这些自动生成的“红”色测试，确保新功能不会触发历史已有的 Bug。
-4. **契约固化与回归**：
-   - 运行 `pytest` 确保修复通过。
-   - 运行 `rule_generator.py` 将健康状态固化为 `generated_tdd_rules.json` 规则库。
+   - **灭虫于开头**：在编写代码初期运行这些自动生成的测试，确保新功能不会触发历史已有的 Bug。
+4. **契约固化与回归**：修复通过后，运行 `rule_generator.py` 将当前健康状态固化为未来的质量基线。
 5. 详情见《LogPulse 自动化 TDD 实践手册》即 [TDD_MANUAL.md](TDD_MANUAL.md) 文档。
 ---
 
